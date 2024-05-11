@@ -2,24 +2,25 @@ import { getFrameMetadata } from "@coinbase/onchainkit";
 import type { Metadata } from "next";
 
 const frameMetadata = getFrameMetadata({
+  input: {
+    text: "Insert an amount of ETH to stake",
+  },
   buttons: [
     {
-      label: "Find your BFF",
+      label: "Stake",
       action: "post",
     },
   ],
-  image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/front_image.png`, aspectRatio: "1:1" },
+  image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`, aspectRatio: "1:1" },
   post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main`,
 });
 
 export const metadata: Metadata = {
-  title: "Best Friend Frame",
-  description:
-    "A farcaster frame that lets you find the person you engaged the most with and mint an NFT representing your friendship.",
+  title: "Staking Frame",
+  description: "A Farcaster frame to stake ETH, leveraging Brian AI API",
   openGraph: {
-    title: "Best Friend Frame",
-    description:
-      "A farcaster frame that lets you find the person you engaged the most with and mint an NFT representing your friendship.",
+    title: "Staking Frame",
+    description: "A Farcaster frame to stake ETH, leveraging Brian AI API",
     images: [`${process.env.NEXT_PUBLIC_BASE_URL}/frames/front_image.png`],
   },
   other: {
