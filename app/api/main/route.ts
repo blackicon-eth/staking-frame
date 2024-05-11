@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getFrameHtmlResponse } from "@coinbase/onchainkit";
 import { FrameActionDataParsedAndHubContext } from "frames.js";
-import { getInvalidFidFrame, getPinLimitFrame } from "@/app/lib/getFrame";
-import { getFriend, getPinCount, validateMessage } from "@/app/lib/utils";
+import { getInvalidFidFrame } from "@/app/lib/getFrame";
+import { validateMessage } from "@/app/lib/utils";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the user data and validating it
@@ -15,61 +15,33 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     return getInvalidFidFrame();
   }
 
-  if ((await getPinCount()) >= 475) {
-    return getPinLimitFrame();
+  // Get the action from parameters
+  const action = req.nextUrl.searchParams.get("action")!;
+
+  if (action === "deposit") {
+  } else if (action === "withdraw") {
+  } else {
   }
 
-  // Getting caller info from the frame message
-  const callerUsername = frameMessage.requesterUserData?.username ?? "";
-  const callerPropic = frameMessage.requesterUserData?.profileImage ?? "";
-  const callerAddress = frameMessage.requesterVerifiedAddresses[0] ?? frameMessage.requesterCustodyAddress ?? ""; // Validated address is preferred over custody address
-  const callerFid = frameMessage.requesterFid ?? "";
-
-  // Getting caller's friend username and friend propic
-  const {
-    friendUsername,
-    friendPropic,
-    friendAddress,
-    friendshipLevel,
-  }: { friendUsername: string; friendPropic: string; friendAddress: string; friendshipLevel: string } = await getFriend(
-    callerFid
-  );
+  // TODO: Implement a logic to:
+  // 1. Check if a transaction is in the buffer already
+  // 2. If not, create a new transaction and return the same "updating..." frame
+  // 3. If yes and it's ready, return the transaction frame
+  // 4. If yes and it's not ready, return the same "updating..." frame
 
   // Creating the frame
   const frame = getFrameHtmlResponse({
-    buttons:
-      callerUsername && callerAddress && callerPropic && friendUsername && friendAddress && friendPropic && friendshipLevel
-        ? [
-            {
-              label: "Mint for me",
-              action: "tx",
-              target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/mint?callerUsername=${callerUsername}&callerPropic=${callerPropic}&friendUsername=${friendUsername}&friendPropic=${friendPropic}&friendshipLevel=${friendshipLevel}&callerAddress=${callerAddress}&friendAddress=0x0000000000000000000000000000000000000000`,
-              postUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/post_transaction?callerUsername=${callerUsername}&callerPropic=${callerPropic}&friendUsername=${friendUsername}&friendPropic=${friendPropic}&friendshipLevel=${friendshipLevel}`,
-            },
-            {
-              label: "Mint for both",
-              action: "tx",
-              target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/mint?callerUsername=${callerUsername}&callerPropic=${callerPropic}&friendUsername=${friendUsername}&friendPropic=${friendPropic}&friendshipLevel=${friendshipLevel}&callerAddress=${callerAddress}&friendAddress=${friendAddress}`,
-              postUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/post_transaction?callerUsername=${callerUsername}&callerPropic=${callerPropic}&friendUsername=${friendUsername}&friendPropic=${friendPropic}&friendshipLevel=${friendshipLevel}`,
-            },
-            {
-              label: "Share!",
-              action: "link",
-              target:
-                "https://warpcast.com/~/compose?text=Find%20your%20farcaster%20best%20friend!%0A%0Ahttps://bf-frame.vercel.app/",
-            },
-          ]
-        : [
-            {
-              label: "Retry",
-              action: "post",
-            },
-          ],
+    buttons: [
+      {
+        label: "Update",
+        action: "post",
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main`,
+      },
+    ],
     image: {
-      src: `${process.env.NEXT_PUBLIC_BASE_URL}/api/image?callerUsername=${callerUsername}&callerPropic=${callerPropic}&friendUsername=${friendUsername}&friendPropic=${friendPropic}`,
+      src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`,
       aspectRatio: "1:1",
     },
-    post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main`,
   });
 
   return new NextResponse(frame);
