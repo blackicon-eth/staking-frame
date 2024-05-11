@@ -5,9 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Best Friend Frame",
-  description:
-    "A farcaster frame that lets you find the person you engaged the most with and mint an NFT representing your friendship.",
+  title: "Staking Frame",
+  description: "A Farcaster frame to stake ETH, leveraging Brian AI API",
 };
 
 export default function RootLayout({
