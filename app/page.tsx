@@ -9,18 +9,20 @@ const frameMetadata = getFrameMetadata({
     {
       label: "Ask Brian 🧠",
       action: "post",
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/knowledge`,
     },
     {
       label: "Stake ETH",
       action: "post",
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=deposit`,
     },
     {
       label: "Withdraw ETH",
       action: "post",
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=withdraw`,
     },
   ],
   image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`, aspectRatio: "1:1" },
-  post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main`,
 });
 
 export const metadata: Metadata = {
