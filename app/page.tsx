@@ -3,11 +3,19 @@ import type { Metadata } from "next";
 
 const frameMetadata = getFrameMetadata({
   input: {
-    text: "Insert an amount of ETH to stake",
+    text: "Ask a question or insert amount",
   },
   buttons: [
     {
-      label: "Stake",
+      label: "Ask Brian 🧠",
+      action: "post",
+    },
+    {
+      label: "Stake ETH",
+      action: "post",
+    },
+    {
+      label: "Withdraw ETH",
       action: "post",
     },
   ],
@@ -31,7 +39,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <>
-      <h1>BFF - Best Friend Frame</h1>
+      <h1>Brian Staking Frame</h1>
     </>
   );
 }
