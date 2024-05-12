@@ -4,13 +4,35 @@ import { verifySignatureAppRouter } from "@upstash/qstash/dist/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
 async function handler(request: NextRequest) {
-  const body = await request.json();
+  const data = await request.json();
 
-  console.log(JSON.stringify(body));
+  console.log(JSON.stringify(data));
 
-  // Save the data to the redis database
+  // Call brian knowledge API
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Brian-Api-Key": process.env.BRIAN_API_KEY!,
+  };
 
-  return new NextResponse("Job finished succesfully", { status: 200 });
+  try {
+    const response = await fetch("https://staging-api.brianknows.org/api/v0/agent/knowledge", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        prompt: data.prompt,
+        kb: "kb_lido",
+      }),
+    });
+
+    console.log("Brian knowledge API response: ", JSON.stringify(response));
+
+    // Save the data to the Redis database
+
+    return new NextResponse("Brian response wrote in Redis", { status: 200 });
+  } catch (error) {
+    console.error("Error while calling Brian knowledge API: ", error);
+    return new NextResponse("Error while calling Brian knowledge API", { status: 500 });
+  }
 }
 
 export const POST = verifySignatureAppRouter(handler);
