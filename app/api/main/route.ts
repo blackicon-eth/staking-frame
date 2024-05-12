@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getFrameHtmlResponse } from "@coinbase/onchainkit";
 import { FrameActionDataParsedAndHubContext } from "frames.js";
 import { getInvalidFidFrame, getUpdateFrame } from "@/app/lib/getFrame";
 import { validateMessage } from "@/app/lib/utils";
@@ -13,6 +12,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { frameMessage, isValid }: { frameMessage: FrameActionDataParsedAndHubContext | undefined; isValid: boolean } =
     await validateMessage(data);
   if (!isValid || !frameMessage) {
+    console.log("isValid: ", isValid);
+    console.log("frameMessage: ", frameMessage);
     return getInvalidFidFrame();
   }
 
