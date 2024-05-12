@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Staking Frame",
     description: "A Farcaster frame to stake ETH, leveraging Brian AI API",
-    images: [`${process.env.NEXT_PUBLIC_BASE_URL}/frames/front_image.png`],
+    images: [`${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`],
   },
   other: {
     ...frameMetadata,
