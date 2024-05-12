@@ -30,7 +30,7 @@ async function handler(request: NextRequest) {
   }
 
   const brianResponseJson = await brianResponse.json();
-  console.log("Brian knowledge API response: ", brianResponseJson.result.text);
+  console.log("Brian response: ", brianResponseJson.result.text);
 
   // Save the data to the Redis database
   const redis = new Redis({
