@@ -34,7 +34,7 @@ async function handler(request: NextRequest) {
 
   // Save the data to the Redis database
   const redis = new Redis({
-    url: "https://us1-absolute-tahr-43039.upstash.io",
+    url: process.env.REDIS_URL!,
     token: process.env.REDIS_TOKEN!,
   });
 
