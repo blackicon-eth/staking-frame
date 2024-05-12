@@ -12,7 +12,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   try {
     await qstashClient.publishJSON({
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/knowledge-work`,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/knowledge-worker`,
       body: {
         prompt: question,
         kb: "kb_lido",
