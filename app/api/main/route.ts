@@ -3,6 +3,7 @@ import { getFrameHtmlResponse } from "@coinbase/onchainkit";
 import { FrameActionDataParsedAndHubContext } from "frames.js";
 import { getInvalidFidFrame } from "@/app/lib/getFrame";
 import { validateMessage } from "@/app/lib/utils";
+import axios from "axios";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the user data and validating it
@@ -15,12 +16,20 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     return getInvalidFidFrame();
   }
 
+  // Get the prompt from the frame message
+  const prompt = frameMessage.inputText;
+
   // Get the action from parameters
   const action = req.nextUrl.searchParams.get("action")!;
+  const state = req.nextUrl.searchParams.get("state")!;
 
-  if (action === "deposit") {
-  } else if (action === "withdraw") {
-  } else {
+  if (state === "start") {
+    if (action === "ask") {
+      // Send the question from the frame message to the Qstash API
+      await axios.post("/api/knowledge-send", {
+        question: prompt,
+      });
+    }
   }
 
   // TODO: Implement a logic to:
