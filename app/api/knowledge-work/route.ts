@@ -8,7 +8,7 @@ async function getResponse(request: NextRequest) {
 
   console.log(body);
 
-  // Do whatever you need to do
+  // Save the data to the redis database
 
   return new NextResponse("Job started", { status: 200 });
 }
