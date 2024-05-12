@@ -31,7 +31,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (state === "start") {
     if (action === "ask") {
       // Send the question from the frame message to the Qstash API
-      const res: NextResponse = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/knowledge-send`, {
+      const res: NextResponse = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/knowledge-sender`, {
         question: prompt,
       });
       if (res.status === 200) {

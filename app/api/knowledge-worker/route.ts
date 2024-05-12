@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 async function handler(request: NextRequest) {
   const body = await request.json();
 
-  console.log(body);
+  console.log(JSON.stringify(body));
 
   // Save the data to the redis database
 
