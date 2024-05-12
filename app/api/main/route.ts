@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { FrameActionDataParsedAndHubContext } from "frames.js";
 import { getErrorFrame, getInvalidFidFrame, getUpdateFrame } from "@/app/lib/getFrame";
 import { loadQstash, validateMessage } from "@/app/lib/utils";
+import { v4 as uuidv4 } from "uuid";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the user data and validating it
@@ -20,8 +21,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Get the action from parameters
   const action = req.nextUrl.searchParams.get("action")!;
 
+  // Creating a uuid for this call
+  const uuid = uuidv4();
+
   // Send the question from the frame message to the Qstash API
-  const { response } = await loadQstash(action, prompt, "123");
+  const { response } = await loadQstash(action, prompt, uuid);
   if (response === "ko") {
     return getErrorFrame();
   }
