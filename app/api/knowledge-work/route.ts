@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
-export async function getResponse(request: NextRequest) {
+async function getResponse(request: NextRequest) {
   const body = await request.json();
 
   console.log(body);
