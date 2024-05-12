@@ -8,14 +8,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the user data and validating it
   const data = await req.json();
 
-  console.log("data: ", data);
-
   // Validating the frame message
   const { frameMessage, isValid }: { frameMessage: FrameActionDataParsedAndHubContext | undefined; isValid: boolean } =
     await validateMessage(data);
   if (!isValid || !frameMessage) {
-    console.log("isValid: ", isValid);
-    console.log("frameMessage: ", frameMessage);
     return getInvalidFidFrame();
   }
 
