@@ -1,31 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Abi, Address, encodeFunctionData } from "viem";
 import { base } from "viem/chains";
-import { FarcasterBestFriendsABI } from "@/app/lib/abi/FarcasterBestFriendsABI";
-import { BFF_ADDRESS } from "@/app/lib/constants/constants";
-import { approve, calculateCID, validateMessage } from "@/app/lib/utils";
+import { validateMessage } from "@/app/lib/utils";
 import { FrameTransactionResponse } from "@coinbase/onchainkit/frame";
-import { generateFriendImage } from "@/app/lib/generateImage";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the frame request
   const body = await req.json();
-
-  // Getting the number on mints from the nextUrl
-  const callerAddress: Address = req.nextUrl.searchParams.get("callerAddress")! as Address;
-  const friendAddress: Address = req.nextUrl.searchParams.get("friendAddress")! as Address;
-  const callerUsername = req.nextUrl.searchParams.get("callerUsername")!;
-  const callerPropic = req.nextUrl.searchParams.get("callerPropic")!;
-  const friendUsername = req.nextUrl.searchParams.get("friendUsername")!;
-  const friendPropic = req.nextUrl.searchParams.get("friendPropic")!;
-  const friendshipLevel = req.nextUrl.searchParams.get("friendshipLevel")!;
-
-  // Generating the image and calculating the CID from it
-  const imageBuffer = await generateFriendImage(callerUsername, callerPropic, friendUsername, friendPropic);
-  const { imageCid, jsonCid } = await calculateCID(imageBuffer, friendUsername, callerUsername, friendshipLevel);
-
-  console.log("JSON CID: ", jsonCid);
-  console.log("Image CID: ", imageCid);
 
   // Validating the frame message
   const { isValid } = await validateMessage(body);
@@ -33,18 +14,15 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     return new NextResponse("Message not valid", { status: 500 });
   }
 
-  const signature = await approve(jsonCid, callerAddress, friendAddress);
+  const abi: any = "TODO: Get the ABI of the contract";
 
   // Getting the encoded data to build the transaction
   const data = encodeFunctionData({
-    abi: FarcasterBestFriendsABI, // ABI of the contract
-    functionName: "safeMint",
+    abi: abi as Abi, // ABI of the contract
+    functionName: "TODO: Function name to call",
     args: [
       {
-        uri: jsonCid,
-        minter: callerAddress,
-        friend: friendAddress,
-        signature: signature as Address,
+        // Arguments to pass to the function
       },
     ],
   });
@@ -54,10 +32,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     chainId: `eip155:${base.id}`,
     method: "eth_sendTransaction",
     params: {
-      abi: FarcasterBestFriendsABI as Abi,
-      to: BFF_ADDRESS, // The contract address deployed on Base
+      abi: abi as Abi,
+      to: "0x123", // The contract address we want to interact with
       data: data,
-      value: "0",
+      value: "0", // Value to send with the transaction
     },
   };
 
