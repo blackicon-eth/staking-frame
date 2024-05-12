@@ -1,4 +1,38 @@
 import { FrameActionDataParsedAndHubContext, getFrameMessage } from "frames.js";
+import { Client } from "@upstash/qstash";
+
+export async function loadQstash(action: string, prompt: string, id: string): Promise<{ response: string }> {
+  // Get the Qstash client
+  const qstashClient = new Client({
+    token: process.env.QSTASH_TOKEN!,
+  });
+
+  const endpoint =
+    action === "ask"
+      ? "knowledge-worker"
+      : action === "deposit"
+      ? "deposit-worker"
+      : action === "withdraw"
+      ? "withdraw-worker"
+      : "";
+
+  // Send the prompt from the frame message to the Qstash API
+  try {
+    await qstashClient.publishJSON({
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/${endpoint}`,
+      body: {
+        id: id,
+        prompt: prompt,
+      },
+    });
+    return { response: "ok" };
+  } catch (error) {
+    console.error("Error while publishing json to QStash: ", error);
+    return { response: "ko" };
+  }
+}
+
+export const dynamic = "force-dynamic";
 
 export async function validateMessage(
   body: any

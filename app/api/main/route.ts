@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FrameActionDataParsedAndHubContext } from "frames.js";
-import { getInvalidFidFrame, getUpdateFrame } from "@/app/lib/getFrame";
-import { validateMessage } from "@/app/lib/utils";
-import axios from "axios";
+import { getErrorFrame, getInvalidFidFrame, getUpdateFrame } from "@/app/lib/getFrame";
+import { loadQstash, validateMessage } from "@/app/lib/utils";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the user data and validating it
@@ -16,33 +15,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   }
 
   // Get the prompt from the frame message
-  const prompt = frameMessage.inputText;
+  const prompt = frameMessage.inputText!;
 
   // Get the action from parameters
   const action = req.nextUrl.searchParams.get("action")!;
-  const state = req.nextUrl.searchParams.get("state")!;
 
-  // TODO: Implement a logic to:
-  // 1. Check if a transaction is in the buffer already
-  // 2. If not, create a new transaction and return the same "updating..." frame
-  // 3. If yes and it's ready, return the transaction frame
-  // 4. If yes and it's not ready, return the same "updating..." frame
-
-  if (state === "start") {
-    if (action === "ask") {
-      // Send the question from the frame message to the Qstash API
-      const res: NextResponse = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/knowledge-sender`, {
-        question: prompt,
-      });
-      if (res.status === 200) {
-        return getUpdateFrame();
-      }
-    }
-
-    return getUpdateFrame();
+  // Send the question from the frame message to the Qstash API
+  const { response } = await loadQstash(action, prompt, "123");
+  if (response === "ko") {
+    return getErrorFrame();
   }
 
-  return new NextResponse();
+  return getUpdateFrame();
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
