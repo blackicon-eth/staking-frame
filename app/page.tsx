@@ -9,17 +9,17 @@ const frameMetadata = getFrameMetadata({
     {
       label: "Ask Brian 🧠",
       action: "post",
-      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=ask?state=start`,
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=ask&state=start`,
     },
     {
       label: "Stake ETH",
       action: "post",
-      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=deposit?state=start`,
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=deposit&state=start`,
     },
     {
       label: "Withdraw ETH",
       action: "post",
-      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=withdraw?state=start`,
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=withdraw&state=start`,
     },
   ],
   image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`, aspectRatio: "1:1" },
