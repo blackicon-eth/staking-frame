@@ -1,20 +1,16 @@
 // This is a public API endpoint that will be invoked by QStash.
 // It contains the logic for the background job and may take a long time to execute.
-
+import { verifySignatureAppRouter } from "@upstash/qstash/dist/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
-async function getResponse(request: NextRequest) {
+async function handler(request: NextRequest) {
   const body = await request.json();
 
   console.log(body);
 
   // Save the data to the redis database
 
-  return new NextResponse("Job started", { status: 200 });
+  return new NextResponse("Job finished succesfully", { status: 200 });
 }
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
-  return getResponse(req);
-}
-
-export const dynamic = "force-dynamic";
+export const POST = verifySignatureAppRouter(handler);
