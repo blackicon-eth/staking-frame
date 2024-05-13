@@ -3,6 +3,7 @@ import { FrameActionDataParsedAndHubContext } from "frames.js";
 import { getErrorFrame, getInvalidFidFrame, getUpdateFrame } from "@/app/lib/getFrame";
 import { loadQstash, validateMessage } from "@/app/lib/utils";
 import { v4 as uuidv4 } from "uuid";
+import { Redis } from "@upstash/redis";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the user data and validating it
@@ -29,6 +30,25 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (response === "ko") {
     return getErrorFrame();
   }
+
+  // Save the data to the Redis database
+  // const redis = new Redis({
+  //   url: process.env.REDIS_URL!,
+  //   token: process.env.REDIS_TOKEN!,
+  // });
+
+  // var redisResponse = await redis.set(uuid, "Pluto is a small planet");
+
+  // console.log("UUID: ", uuid);
+  // console.log("Redis response to set: ", redisResponse);
+
+  // redisResponse = await redis.get(uuid);
+
+  // console.log("Redis response to get: ", redisResponse);
+
+  // const deletionResponse = await redis.del(uuid);
+
+  // console.log("Redis response to del: ", deletionResponse.toString());
 
   return getUpdateFrame();
 }

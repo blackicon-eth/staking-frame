@@ -1,7 +1,7 @@
 import { FrameActionDataParsedAndHubContext, getFrameMessage } from "frames.js";
 import { Client } from "@upstash/qstash";
 
-export async function loadQstash(action: string, prompt: string, id: string): Promise<{ response: string }> {
+export async function loadQstash(action: string, prompt: string, uuid: string): Promise<{ response: string }> {
   // Get the Qstash client
   const qstashClient = new Client({
     token: process.env.QSTASH_TOKEN!,
@@ -21,7 +21,7 @@ export async function loadQstash(action: string, prompt: string, id: string): Pr
     await qstashClient.publishJSON({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/${endpoint}`,
       body: {
-        id: id,
+        uuid: uuid,
         prompt: prompt,
       },
     });
@@ -31,8 +31,6 @@ export async function loadQstash(action: string, prompt: string, id: string): Pr
     return { response: "ko" };
   }
 }
-
-export const dynamic = "force-dynamic";
 
 export async function validateMessage(
   body: any
