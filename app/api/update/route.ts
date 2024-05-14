@@ -34,6 +34,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   console.log("Redis response: ", redisResponse);
 
+  // Delete the data from the Redis database
+  await redis.del(uuid);
+
   return getUpdateFrame(uuid, action);
 }
 
