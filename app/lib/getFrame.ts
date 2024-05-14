@@ -31,13 +31,13 @@ export function getErrorFrame(): NextResponse {
   return new NextResponse(frame);
 }
 
-export function getUpdateFrame(): NextResponse {
+export function getUpdateFrame(uuid: string, action: string): NextResponse {
   const frame = getFrameHtmlResponse({
     buttons: [
       {
         label: "Update",
         action: "post",
-        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main`,
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/update?uuid=${uuid}&action=${action}`,
       },
     ],
     image: {
