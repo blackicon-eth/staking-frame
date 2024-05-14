@@ -22,7 +22,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Get the action from parameters
   const action = req.nextUrl.searchParams.get("action")!;
 
-  // Creating a uuid for this call
+  // Creating a unique id for this call
   const uuid = uuidv4();
 
   // Send the question from the frame message to the Qstash API
@@ -50,7 +50,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   // console.log("Redis response to del: ", deletionResponse.toString());
 
-  return getUpdateFrame();
+  return getUpdateFrame(uuid, action);
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
