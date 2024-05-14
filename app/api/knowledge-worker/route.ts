@@ -25,12 +25,11 @@ async function handler(request: NextRequest) {
   });
 
   if (!brianResponse.ok) {
-    console.error("Error while calling Brian knowledge API or while writing on Redis");
-    return new NextResponse("Error while calling Brian knowledge API  or while writing on Redis", { status: 500 });
+    console.error("Error while calling Brian knowledge API");
+    return new NextResponse("Error while calling Brian knowledge API", { status: 500 });
   }
 
   const brianResponseJson = await brianResponse.json();
-  console.log("Brian response: ", brianResponseJson.result.text);
 
   // Save the data to the Redis database
   const redis = new Redis({
@@ -39,6 +38,11 @@ async function handler(request: NextRequest) {
   });
 
   const redisResponse = await redis.set(data.uuid, brianResponseJson);
+
+  if (!redisResponse) {
+    console.error("Error while writing to Redis");
+    return new NextResponse("Error while writing to Redis", { status: 500 });
+  }
 
   console.log("Redis response: ", redisResponse);
 
