@@ -14,7 +14,7 @@ const frameMetadata = getFrameMetadata({
     {
       label: "Check staked",
       action: "post",
-      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=staked`,
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=check`,
     },
     {
       label: "Stake ETH",
