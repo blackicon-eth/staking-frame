@@ -1,16 +1,16 @@
 import { getFrameHtmlResponse } from "@coinbase/onchainkit";
 import { NextResponse } from "next/server";
 
-export function getInvalidFidFrame(): NextResponse {
+export function getInvalidFrame(): NextResponse {
   const frame = getFrameHtmlResponse({
     buttons: [
       {
-        label: "Retry",
+        label: "Start Over",
         action: "post",
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/start-over`,
       },
     ],
-    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`, aspectRatio: "1:1" },
-    post_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main`,
+    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/invalid.png` },
   });
 
   return new NextResponse(frame);
@@ -20,28 +20,42 @@ export function getErrorFrame(): NextResponse {
   const frame = getFrameHtmlResponse({
     buttons: [
       {
-        label: "Retry",
+        label: "Start Over",
         action: "post",
         target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/start-over`,
       },
     ],
-    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`, aspectRatio: "1:1" },
+    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/error.png` },
   });
 
   return new NextResponse(frame);
 }
 
-export function getUpdateFrame(uuid: string, action: string): NextResponse {
+export function getUpdateFrame(uuid: string, action: string, count: number): NextResponse {
   const frame = getFrameHtmlResponse({
-    buttons: [
-      {
-        label: "Update",
-        action: "post",
-        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/update?uuid=${uuid}&action=${action}`,
-      },
-    ],
+    buttons:
+      count > 3
+        ? [
+            { label: "Start Over", action: "post", target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/start-over` },
+            {
+              label: "Update",
+              action: "post",
+              target: `${
+                process.env.NEXT_PUBLIC_BASE_URL
+              }/api/update?uuid=${uuid}&action=${action}&count=${count.toString()}`,
+            },
+          ]
+        : [
+            {
+              label: "Update",
+              action: "post",
+              target: `${
+                process.env.NEXT_PUBLIC_BASE_URL
+              }/api/update?uuid=${uuid}&action=${action}&count=${count.toString()}`,
+            },
+          ],
     image: {
-      src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`,
+      src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png`,
       aspectRatio: "1:1",
     },
   });
@@ -49,7 +63,7 @@ export function getUpdateFrame(uuid: string, action: string): NextResponse {
   return new NextResponse(frame);
 }
 
-export function getKnowledgeFrame(): NextResponse {
+export function getKnowledgeFrame(uuid: string, action: string): NextResponse {
   const frame = getFrameHtmlResponse({
     buttons: [
       {
@@ -57,8 +71,18 @@ export function getKnowledgeFrame(): NextResponse {
         action: "post",
         target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/start-over`,
       },
+      {
+        label: "See full response",
+        action: "link",
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+      },
+      {
+        label: "Share!",
+        action: "link",
+        target: `https://warpcast.com/~/compose?text=Stake%20your%20ETH%20with%20Brian!%0A%0A${process.env.NEXT_PUBLIC_BASE_URL}`,
+      },
     ],
-    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/api/image`, aspectRatio: "1:1" },
+    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/api/image?uuid=${uuid}&action=${action}` },
   });
 
   return new NextResponse(frame);
@@ -86,7 +110,7 @@ export function getFirstFrame(): NextResponse {
         target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=withdraw?state=start`,
       },
     ],
-    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`, aspectRatio: "1:1" },
+    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png` },
   });
 
   return new NextResponse(frame);
