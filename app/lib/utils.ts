@@ -1,5 +1,6 @@
 import { FrameActionDataParsedAndHubContext, getFrameMessage } from "frames.js";
 import { Client } from "@upstash/qstash";
+import * as actions from "./constants/actions";
 
 export async function loadQstash(action: string, prompt: string, uuid: string): Promise<{ response: string }> {
   // Get the Qstash client
@@ -8,11 +9,11 @@ export async function loadQstash(action: string, prompt: string, uuid: string): 
   });
 
   const endpoint =
-    action === "ask"
+    action === actions.ASK
       ? "knowledge-worker"
-      : action === "deposit"
+      : action === actions.DEPOSIT
       ? "deposit-worker"
-      : action === "withdraw"
+      : action === actions.WITHDRAW
       ? "withdraw-worker"
       : "";
 
