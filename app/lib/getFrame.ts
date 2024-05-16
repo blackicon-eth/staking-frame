@@ -72,7 +72,7 @@ export function getKnowledgeFrame(uuid: string, action: string): NextResponse {
         target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/start-over`,
       },
       {
-        label: "See full response",
+        label: "See full text",
         action: "link",
         target: `${process.env.NEXT_PUBLIC_BASE_URL}`,
       },
