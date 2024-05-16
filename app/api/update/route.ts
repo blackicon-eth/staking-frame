@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FrameActionDataParsedAndHubContext } from "frames.js";
-import { getErrorFrame, getInvalidFidFrame, getUpdateFrame } from "@/app/lib/getFrame";
+import { getInvalidFrame, getKnowledgeFrame, getUpdateFrame } from "@/app/lib/getFrame";
 import { validateMessage } from "@/app/lib/utils";
 import { Redis } from "@upstash/redis";
 
@@ -12,12 +12,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { frameMessage, isValid }: { frameMessage: FrameActionDataParsedAndHubContext | undefined; isValid: boolean } =
     await validateMessage(data);
   if (!isValid || !frameMessage) {
-    return getInvalidFidFrame();
+    return getInvalidFrame();
   }
 
-  // Get the action and uuid from parameters
+  // Get the action, count and uuid from parameters
   const action = req.nextUrl.searchParams.get("action")!;
   const uuid = req.nextUrl.searchParams.get("uuid")!;
+  const count = req.nextUrl.searchParams.get("count")!;
 
   // Get the data from the Redis database
   const redis = new Redis({
@@ -28,16 +29,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const redisResponse = await redis.get(uuid);
 
   if (!redisResponse) {
-    console.log("No data found in Redis. Sending update frame.");
-    return getUpdateFrame(uuid, action);
+    return getUpdateFrame(uuid, action, parseInt(count) + 1);
   }
 
   console.log("Redis response: ", redisResponse);
 
-  // Delete the data from the Redis database
-  await redis.del(uuid);
-
-  return getUpdateFrame(uuid, action);
+  return getKnowledgeFrame(uuid, action);
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
