@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateMessage } from "@/app/lib/utils";
-import { getInvalidFidFrame } from "@/app/lib/getFrame";
+import { getInvalidFrame } from "@/app/lib/getFrame";
 import { FrameActionDataParsedAndHubContext } from "frames.js";
 import { getFrameHtmlResponse } from "@coinbase/onchainkit";
 
@@ -12,7 +12,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { frameMessage, isValid }: { frameMessage: FrameActionDataParsedAndHubContext | undefined; isValid: boolean } =
     await validateMessage(data);
   if (!isValid || !frameMessage) {
-    return getInvalidFidFrame();
+    return getInvalidFrame();
   }
 
   // Do things after the transaction is sent
