@@ -1,5 +1,6 @@
 import { getFrameMetadata } from "@coinbase/onchainkit";
 import type { Metadata } from "next";
+import * as action from "./lib/constants/actions";
 
 const frameMetadata = getFrameMetadata({
   input: {
@@ -9,22 +10,22 @@ const frameMetadata = getFrameMetadata({
     {
       label: "Ask Brian 🧠",
       action: "post",
-      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=ask`,
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${action.ASK}`,
     },
     {
       label: "Check staked",
       action: "post",
-      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=check`,
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${action.CHECK}`,
     },
     {
       label: "Stake ETH",
       action: "post",
-      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=deposit`,
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${action.DEPOSIT}`,
     },
     {
       label: "Withdraw ETH",
       action: "post",
-      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=withdraw`,
+      target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${action.WITHDRAW}`,
     },
   ],
   image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png` },
