@@ -37,10 +37,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         target: "https://warpcast.com/blackicon.eth/0xeec9675e",
       },
     ],
-    image: {
-      src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/transaction_sent.png`,
-      aspectRatio: "1:1",
-    },
+    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/transaction_sent.png` },
   });
 
   return new NextResponse(frame);

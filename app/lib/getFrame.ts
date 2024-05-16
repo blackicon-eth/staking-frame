@@ -54,10 +54,7 @@ export function getUpdateFrame(uuid: string, action: string, count: number): Nex
               }/api/update?uuid=${uuid}&action=${action}&count=${count.toString()}`,
             },
           ],
-    image: {
-      src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png`,
-      aspectRatio: "1:1",
-    },
+    image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/loading.gif` },
   });
 
   return new NextResponse(frame);
@@ -98,6 +95,11 @@ export function getFirstFrame(): NextResponse {
         label: "Ask Brian 🧠",
         action: "post",
         target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=ask?state=start`,
+      },
+      {
+        label: "Check staked",
+        action: "post",
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=check`,
       },
       {
         label: "Stake ETH",
