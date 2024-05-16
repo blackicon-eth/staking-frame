@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateFriendImage } from "@/app/lib/generateImage";
+import { generateImage } from "@/app/lib/generateImage";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting params from the URL
-  const callerUsername = req.nextUrl.searchParams.get("callerUsername");
-  const callerPropic = req.nextUrl.searchParams.get("callerPropic");
-  const friendUsername = req.nextUrl.searchParams.get("friendUsername");
-  const friendPropic = req.nextUrl.searchParams.get("friendPropic");
+  const uuid = req.nextUrl.searchParams.get("uuid");
+  const action = req.nextUrl.searchParams.get("action");
+
+  //
 
   // Asserting that the value return with this call is a Buffer
-  const image = await generateFriendImage(callerUsername, callerPropic, friendUsername, friendPropic);
+  const image = await generateImage(uuid, action);
   return new NextResponse(image, {
     headers: {
       "Content-Type": "image/png",
