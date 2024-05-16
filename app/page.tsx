@@ -27,7 +27,7 @@ const frameMetadata = getFrameMetadata({
       target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=withdraw`,
     },
   ],
-  image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`, aspectRatio: "1:1" },
+  image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png` },
 });
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Staking Frame",
     description: "A Farcaster frame to stake ETH, leveraging Brian AI API",
-    images: [`${process.env.NEXT_PUBLIC_BASE_URL}/frames/1to1.png`],
+    images: [`${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png`],
   },
   other: {
     ...frameMetadata,
