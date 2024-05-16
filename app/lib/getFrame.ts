@@ -1,6 +1,6 @@
 import { getFrameHtmlResponse } from "@coinbase/onchainkit";
 import { NextResponse } from "next/server";
-import * as action from "./constants/actions";
+import * as actions from "./constants/actions";
 
 export function getInvalidFrame(): NextResponse {
   const frame = getFrameHtmlResponse({
@@ -95,22 +95,22 @@ export function getFirstFrame(): NextResponse {
       {
         label: "Ask Brian 🧠",
         action: "post",
-        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${action.ASK}`,
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${actions.ASK}`,
       },
       {
         label: "Check staked",
         action: "post",
-        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${action.CHECK}`,
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${actions.CHECK}`,
       },
       {
         label: "Stake ETH",
         action: "post",
-        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${action.DEPOSIT}`,
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${actions.DEPOSIT}`,
       },
       {
         label: "Withdraw ETH",
         action: "post",
-        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${action.WITHDRAW}`,
+        target: `${process.env.NEXT_PUBLIC_BASE_URL}/api/main?action=${actions.WITHDRAW}`,
       },
     ],
     image: { src: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png` },
