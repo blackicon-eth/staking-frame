@@ -50,3 +50,30 @@ export async function generateImage(_callerUsername, _callerPropic, _friendUsern
 
   return buffer;
 }
+
+export async function generateKnowledgeImage(text) {
+  // Generate the image with Satori
+  const svg = await satori(
+    <div style={style.background}>
+      <img src="frames/generic.png" style={style.bgImage} />
+      <div style={style.textContainer}>
+        <span>{text}</span>
+      </div>
+    </div>,
+    {
+      width: 1910,
+      height: 1000,
+      fonts: [
+        {
+          data: GothamBoldItalicBuffer,
+          name: "GothamBoldItalic",
+        },
+      ],
+    }
+  );
+
+  const sharpPNG = sharp(Buffer.from(svg)).toFormat("png");
+  const buffer = await sharpPNG.toBuffer();
+
+  return buffer;
+}
