@@ -3,6 +3,8 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import * as style from "./style_components/styles";
 import sharp from "sharp";
+import path from "path";
+import fs from "fs";
 
 // Load the font
 const font = join(process.cwd(), "public/fonts/GothamBoldItalic.ttf");
@@ -52,13 +54,15 @@ export async function generateImage(_callerUsername, _callerPropic, _friendUsern
 }
 
 export async function generateKnowledgeImage(text) {
+  const imagePath = path.join(process.cwd(), "public/frames/generic.png");
+  const imagebuffer = fs.readFileSync(imagePath);
+  const arrayBuffer = imagebuffer.buffer.slice(imagebuffer.byteOffset, imagebuffer.byteOffset + imagebuffer.byteLength);
+
   // Generate the image with Satori
   const svg = await satori(
     <div style={style.background}>
-      <img src="frames/generic.png" style={style.bgImage} />
-      <div style={style.textContainer}>
-        <span>{text}</span>
-      </div>
+      <img src={arrayBuffer} style={style.bgImage} />
+      <div style={style.textContainer}>{text}</div>
     </div>,
     {
       width: 1910,

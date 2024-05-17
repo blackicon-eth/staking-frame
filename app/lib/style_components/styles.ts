@@ -21,5 +21,7 @@ export const textContainer = {
   display: "flex",
   marginRight: "200px",
   marginLeft: "230",
-  maxWidth: "1450",
+  position: "absolute",
+  bottom: "810",
+  left: "0",
 };
