@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/api/image/route.ts",
+    "app/api-old/image/route.ts",
     "app/page.tsx",
     "app/lib/generateImage.jsx"
   ],

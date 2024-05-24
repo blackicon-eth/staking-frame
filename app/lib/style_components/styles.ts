@@ -1,27 +1,12 @@
-export const bgImage = {
-  width: "100%",
-  height: "100%",
-  postition: "absolute",
-  bottom: "0",
-  left: "0",
-};
-
 export const background = {
   display: "flex",
   height: "100%",
   width: "100%",
-  alignItems: "center",
-  justifyContent: "center",
+  paddingTop: "70px",
+  paddingRight: "320px",
+  paddingLeft: "240px",
   fontSize: 55,
   letterSpacing: -1,
-  fontWeight: 700,
-};
-
-export const textContainer = {
-  display: "flex",
-  marginRight: "200px",
-  marginLeft: "230",
-  position: "absolute",
-  bottom: "810",
-  left: "0",
+  fontWeight: 1000,
+  backgroundImage: `url("${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png")`,
 };
