@@ -13,18 +13,28 @@ import * as style from "../../lib/style_components/styles";
 import { readFileSync } from "fs";
 import { join } from "path";
 
+// Load the font
+const font = join(process.cwd(), "public/fonts/GothamBoldItalic.ttf");
+const GothamBoldItalicBuffer = readFileSync(font);
+
 const app = new Frog({
   assetsPath: "/",
   basePath: "/api",
   hub: neynar({ apiKey: "NEYNAR_FROG_FM" }),
   verify: "silent",
+  imageOptions: {
+    width: 1910,
+    height: 1000,
+    fonts: [
+      {
+        data: GothamBoldItalicBuffer,
+        name: "GothamBoldItalic",
+      },
+    ],
+  },
 });
 
-// Load the font
-const font = join(process.cwd(), "public/fonts/GothamBoldItalic.ttf");
-const GothamBoldItalicBuffer = readFileSync(font);
-
-// Unfortunatelly, importing a function with JSX elements breaks them during the compiling process
+// Unfortunately, importing a function with JSX elements breaks them during the compiling process
 // So here it is a "library" of functions that returns the frames
 
 // Returns an invalid frame
@@ -50,7 +60,7 @@ export function getUpdateFrame(
   count: number,
   context: FrameContext<Env, "/", BlankInput>
 ): TypedResponse<FrameResponse> {
-  const nextTarget = `/update?uuid=${uuid}&action=${action}&count=${count.toString()}`;
+  const nextTarget = `/update/${uuid}/${action}/${count.toString()}`;
   return context.res({
     image: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/loading.gif`,
     intents:
@@ -74,16 +84,6 @@ export function getKnowledgeFrame(
         <p>{text.slice(0, 530) + "..."}</p>
       </div>
     ),
-    imageOptions: {
-      width: 1910,
-      height: 1000,
-      fonts: [
-        {
-          data: GothamBoldItalicBuffer,
-          name: "GothamBoldItalic",
-        },
-      ],
-    },
     intents: [
       <Button action="/">Start over</Button>,
       <Button.Link href={`${process.env.NEXT_PUBLIC_BASE_URL}`}>See full text</Button.Link>,
@@ -104,27 +104,18 @@ app.frame("/", (context) => {
     image: `${process.env.NEXT_PUBLIC_BASE_URL}/frames/generic.png`,
     intents: [
       <TextInput placeholder="Ask a question or insert amount" />,
-      <Button value={actions.ASK} action="/knowledge">
-        Ask Brian 🧠
-      </Button>,
-      <Button value={actions.CHECK}>Check staked</Button>,
-      <Button value={actions.DEPOSIT}>Stake ETH</Button>,
-      <Button value={actions.WITHDRAW}>Withdraw ETH</Button>,
+      <Button>Ask Brian 🧠</Button>,
+      <Button>Check staked</Button>,
+      <Button>Stake ETH</Button>,
+      <Button>Withdraw ETH</Button>,
     ],
+    action: "/router",
   });
 });
 
 // Knowledge Frame
-app.frame("/knowledge", async (context) => {
-  const { verified, inputText, buttonValue } = context;
-
-  console.log("Input text: ", inputText);
-  console.log("Button value: ", buttonValue);
-
-  // Check if the inputText or buttonValue is empty
-  if (!inputText || !buttonValue) {
-    return getErrorFrame(context);
-  }
+app.frame("/router", async (context) => {
+  const { verified, inputText, buttonIndex } = context;
 
   // Validating the frame message
   //if (!verified) return getInvalidFrame(context);
@@ -132,29 +123,54 @@ app.frame("/knowledge", async (context) => {
   // Creating a unique id for this call
   const uuid = uuidv4();
 
-  return getUpdateFrame(uuid, buttonValue, 1, context);
+  console.log("Input text: ", inputText);
+  console.log("Button index: ", buttonIndex);
 
-  // // Send the question from the frame message to the Qstash API
-  // const { response } = await loadQstash(buttonValue, inputText, uuid);
-  // if (response === "ko") {
-  //   return getErrorFrame(context);
-  // }
+  // Asking Brian the question
+  if (buttonIndex === 1) {
+    // Check if the inputText is empty
+    if (!inputText) {
+      return getErrorFrame(context);
+    }
 
-  // return getUpdateFrame(uuid, buttonValue, 1, context);
+    // Send the question from the frame message to the Qstash API
+    const { response } = await loadQstash(actions.ASK, inputText, uuid);
+    if (response === "ko") {
+      return getErrorFrame(context);
+    }
+
+    return getUpdateFrame(uuid, actions.ASK, 1, context);
+  }
+
+  // Checking the staked amount
+  else if (buttonIndex === 2) {
+    return getErrorFrame(context);
+  }
+
+  // Staking ETH
+  else if (buttonIndex === 3) {
+    return getErrorFrame(context);
+  }
+
+  // Withdrawing ETH
+  else if (buttonIndex === 4) {
+    return getErrorFrame(context);
+  }
+
+  // If the button index is not valid
+  return getErrorFrame(context);
 });
 
 // Update Frame
-app.frame("/update", async (context) => {
-  const { uuid, action, count } = context.req.query();
+app.frame("/update/:uuid/:action/:count", async (context) => {
+  const { uuid, action, count } = context.req.param();
+
+  // Validating the frame message
+  //if (!verified) return getInvalidFrame(context);
 
   console.log("UUID: ", uuid);
   console.log("Action: ", action);
   console.log("Count: ", count);
-
-  return getUpdateFrame(uuid, "", parseInt(count) + 1, context);
-
-  // Validating the frame message
-  //if (!verified) return getInvalidFrame(context);
 
   // Get the data from the Redis database
   const redis = new Redis({

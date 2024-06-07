@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { FrameActionDataParsedAndHubContext } from "frames.js";
 import { getInvalidFrame, getKnowledgeFrame, getUpdateFrame } from "@/app/lib/getFrame";
-import { validateMessage } from "@/app/lib/utils";
 import { Redis } from "@upstash/redis";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the user data and validating it
   const data = await req.json();
-
-  // Validating the frame message
-  const { frameMessage, isValid }: { frameMessage: FrameActionDataParsedAndHubContext | undefined; isValid: boolean } =
-    await validateMessage(data);
-  if (!isValid || !frameMessage) {
-    return getInvalidFrame();
-  }
 
   // Get the action, count and uuid from parameters
   const action = req.nextUrl.searchParams.get("action")!;

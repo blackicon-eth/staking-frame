@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { FrameActionDataParsedAndHubContext } from "frames.js";
 import { getErrorFrame, getInvalidFrame, getUpdateFrame } from "@/app/lib/getFrame";
-import { loadQstash, validateMessage } from "@/app/lib/utils";
 import { v4 as uuidv4 } from "uuid";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Getting the user data and validating it
   const data = await req.json();
-
-  // Validating the frame message
-  const { frameMessage, isValid }: { frameMessage: FrameActionDataParsedAndHubContext | undefined; isValid: boolean } =
-    await validateMessage(data);
-  if (!isValid || !frameMessage) {
-    return getInvalidFrame();
-  }
 
   // Get the prompt from the frame message
   const prompt = frameMessage.inputText!;
