@@ -3,7 +3,7 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/dist/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
-import { AskRequestBody, BrianSDK } from "@brian-ai/sdk";
+import { BrianSDK } from "@brian-ai/sdk";
 
 // Initialize Brian SDK
 const brianOptions = {
@@ -17,7 +17,7 @@ async function handler(request: NextRequest) {
   console.log(JSON.stringify(data));
 
   // Call brian knowledge API
-  const brianResponse = brian.ask({
+  const brianResponse = await brian.ask({
     prompt: data.prompt,
     kb: "kb_lido",
   });
