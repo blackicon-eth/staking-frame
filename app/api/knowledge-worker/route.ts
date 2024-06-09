@@ -3,6 +3,13 @@
 import { verifySignatureAppRouter } from "@upstash/qstash/dist/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
+import { AskRequestBody, BrianSDK } from "@brian-ai/sdk";
+
+// Initialize Brian SDK
+const brianOptions = {
+  apiKey: process.env.BRIAN_API_KEY!,
+};
+const brian = new BrianSDK(brianOptions);
 
 async function handler(request: NextRequest) {
   const data = await request.json();
@@ -10,26 +17,17 @@ async function handler(request: NextRequest) {
   console.log(JSON.stringify(data));
 
   // Call brian knowledge API
-  const headers = {
-    "Content-Type": "application/json",
-    "X-Brian-Api-Key": process.env.BRIAN_API_KEY!,
-  };
-
-  const brianResponse = await fetch("https://staging-api.brianknows.org/api/v0/agent/knowledge", {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      prompt: data.prompt,
-      kb: "kb_lido",
-    }),
+  const brianResponse = brian.ask({
+    prompt: data.prompt,
+    kb: "kb_lido",
   });
 
-  if (!brianResponse.ok) {
+  console.log("Brian response: ", brianResponse);
+
+  if (!brianResponse) {
     console.error("Error while calling Brian knowledge API");
     return new NextResponse("Error while calling Brian knowledge API", { status: 500 });
   }
-
-  const brianResponseJson = await brianResponse.json();
 
   // Save the data to the Redis database
   const redis = new Redis({
@@ -37,7 +35,7 @@ async function handler(request: NextRequest) {
     token: process.env.REDIS_TOKEN!,
   });
 
-  const redisResponse = await redis.set(data.uuid, brianResponseJson);
+  const redisResponse = await redis.set(data.uuid, brianResponse);
 
   if (!redisResponse) {
     console.error("Error while writing to Redis");
